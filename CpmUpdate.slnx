@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CpmUpdateTool.Tests/CpmUpdateTool.Tests.csproj" />
+  <Project Path="CpmUpdateTool/CpmUpdateTool.csproj" />
+</Solution>

@@ -1,0 +1,30 @@
+# EditorConfig helps maintain consistent coding styles between different editors and IDEs
+# top-most EditorConfig file
+root = true
+
+# Apply to all files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 80
+
+# C# specific code style
+[*.cs]
+# require camelCase field names (no leading underscore)
+dotnet_naming_rule.field_names_camel_case.symbols = fields
+dotnet_naming_rule.field_names_camel_case.style = camel_case_style
+dotnet_naming_rule.field_names_camel_case.severity = warning
+
+dotnet_naming_symbols.fields.applicable_kinds = field
+dotnet_naming_symbols.fields.applicable_accessibilities = *
+dotnet_naming_symbols.fields.required_modifiers = *
+
+dotnet_naming_style.camel_case_style.capitalization = camel_case
+
+# always qualify fields with "this."
+dotnet_style_qualification_for_field = true:warning
+
+# suppress missing XML comment warning globally
+dotnet_diagnostic.CS1591.severity = none
