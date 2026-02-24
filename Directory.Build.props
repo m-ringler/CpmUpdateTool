@@ -1,0 +1,22 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <!-- Version -->
+    <VersionPrefix>0.1.0</VersionPrefix>
+
+    <!-- Nuget Properties -->
+    <Authors>m-ringler</Authors>
+    <Copyright>2026, M. Ringler</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/m-ringler/CpmUpdateToolstraights</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/m-ringler/CpmUpdateTool.git</RepositoryUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+</Project>

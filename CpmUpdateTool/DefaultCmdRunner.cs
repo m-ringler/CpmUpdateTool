@@ -44,7 +44,8 @@ public class DefaultCmdRunner(
         {
             xdoc = System.Xml.Linq.XDocument.Load(
                 stream,
-                System.Xml.Linq.LoadOptions.PreserveWhitespace);
+                System.Xml.Linq.LoadOptions.PreserveWhitespace
+            );
         }
 
         if (xdoc == null)
@@ -80,7 +81,10 @@ public class DefaultCmdRunner(
                 OmitXmlDeclaration = xdoc.Declaration == null,
             };
 
-            using var writer = System.Xml.XmlWriter.Create(stream, writerSettings);
+            using var writer = System.Xml.XmlWriter.Create(
+                stream,
+                writerSettings
+            );
             xdoc.Save(writer);
         }
 

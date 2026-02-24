@@ -73,14 +73,14 @@ public class ProgramTests
 Description:
   Inspect and update NuGet packages referenced in Directory.Packages.props
 
-Nutzung:
+Usage:
   CpmUpdateTool.Tests [options]
 
-Optionen:
-  --include-prerelease  include prerelease versions when checking for updates
-  --yes                 update all packages without prompting
+Options:
+  --include-prerelease  Include prerelease versions when checking for updates
+  --yes                 Update all packages without prompting
   -?, -h, --help        Show help and usage information
-  --version             Versionsinformationen anzeigen
+  --version             Show version information
 
 
 """,

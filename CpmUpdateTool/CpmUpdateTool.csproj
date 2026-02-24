@@ -1,34 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <!-- tool packaging -->
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>update-cpm</ToolCommandName>
-
-    <!-- Version -->
-    <VersionPrefix>0.1.0</VersionPrefix>
 
     <!-- Nuget Properties -->
     <PackageId>m-ringler.CpmUpdateTool</PackageId>
     <Description>Update central package versions in Directory.Packages.props files.</Description>
     <PackageTags>CPM; Central Package Management; Directory.Packages.props; nuget</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Authors>m-ringler</Authors>
-    <Copyright>2026, M. Ringler</Copyright>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryType>git</RepositoryType>
-    <PackageProjectUrl>https://github.com/m-ringler/CpmUpdateToolstraights</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/m-ringler/CpmUpdateTool.git</RepositoryUrl>
 
     <!-- Build Settings -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>

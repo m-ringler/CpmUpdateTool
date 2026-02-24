@@ -17,14 +17,14 @@ internal class Program(
 
     private readonly Option<bool> yesOption = new("--yes")
     {
-        Description = "update all packages without prompting",
+        Description = "Update all packages without prompting",
     };
 
     private readonly Option<bool> includePrereleaseOption = new(
         "--include-prerelease"
     )
     {
-        Description = "include prerelease versions when checking for updates",
+        Description = "Include prerelease versions when checking for updates",
     };
 
     private static Task<int> Main(string[] args)

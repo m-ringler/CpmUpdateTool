@@ -39,7 +39,8 @@ public sealed record PackageUpgrade(
     {
         if (other == null)
             return false;
-        return this.EqualityContract == other.EqualityContract && this.Id == other.Id;
+        return this.EqualityContract == other.EqualityContract
+            && this.Id == other.Id;
     }
 
     public override int GetHashCode()
@@ -53,7 +54,9 @@ public static partial class OutdatedJsonExtensions
     [GeneratedRegex(@"^\d+\.\d+\.\d+")]
     public static partial Regex SemVer();
 
-    public static ImmutableSortedSet<PackageUpgrade> Flatten(this OutdatedJson json)
+    public static ImmutableSortedSet<PackageUpgrade> Flatten(
+        this OutdatedJson json
+    )
     {
         if (json?.projects == null)
             return [];

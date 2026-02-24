@@ -15,7 +15,8 @@ internal class RealFileSystem : IFileSystem
 
     public Stream OpenRead(string path) => File.OpenRead(path);
 
-    public Stream OpenWrite(string path) => File.Open(path, FileMode.Create, FileAccess.Write);
+    public Stream OpenWrite(string path) =>
+        File.Open(path, FileMode.Create, FileAccess.Write);
 
     public string CombinePaths(string path, string path1) =>
         Path.Combine(path, path1);

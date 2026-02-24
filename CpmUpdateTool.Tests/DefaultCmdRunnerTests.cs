@@ -65,14 +65,16 @@ public class DefaultCmdRunnerTests
         var fs = new FakeFileSystem();
         fs.AddFile(path, TestXml);
         var runner = new DefaultCmdRunner(new FakeConsole(), fs, cwd);
-        var exit = await runner.UpdatePackageAsync("Microsoft.NET.Test.Sdk", "18.3.0");
+        var exit = await runner.UpdatePackageAsync(
+            "Microsoft.NET.Test.Sdk",
+            "18.3.0"
+        );
         Assert.Equal(0, exit);
         var updated = fs[path];
         Assert.Equal(TestXml.Replace("18.0.1", "18.3.0"), updated);
     }
 
-    private const string TestXml =
-"""
+    private const string TestXml = """
 <Project>
   <ItemGroup>
     <PackageVersion Include="AwesomeAssertions" Version="9.4.0" />

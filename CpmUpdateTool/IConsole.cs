@@ -27,7 +27,7 @@ internal class RealConsole : IConsole
 
     public async Task WriteBusyAsync(CancellationToken token)
     {
-        char [] spinner = ['|', '/', '-', '\\'];
+        char[] spinner = ['|', '/', '-', '\\'];
         int idx = 0;
         while (!token.IsCancellationRequested)
         {
@@ -37,9 +37,7 @@ internal class RealConsole : IConsole
             {
                 await Task.Delay(100, token);
             }
-            catch (TaskCanceledException)
-            {
-            }
+            catch (TaskCanceledException) { }
         }
 
         Console.Write("\r");

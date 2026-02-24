@@ -1,0 +1,77 @@
+---
+# Build nuget packages and upload as build artifacts.
+permissions:
+  contents: read
+
+name: .NET Build
+
+on:
+  # push:
+  #   branches: ["main"]
+  # pull_request:
+  #   branches: ["main"]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    defaults:
+      run:
+        working-directory: .
+    name: "Build nuget"
+    runs-on: ubuntu-latest
+    env:
+      NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          lfs: true
+
+      - name: Get Version
+        id: get-set-version
+        uses: ./.github/actions/get-set-version
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Print .NET version
+        run: dotnet --version
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Test
+        run: >
+          dotnet test
+          -c Release
+          --verbosity normal
+          --logger trx
+          --results-directory "TestResults"
+          -p:CollectCoverage=true
+          -p:CoverletOutputFormat=cobertura
+          -p:CoverletOutput=${{ github.workspace }}/TestResults/coverage.cobertura.xml
+          -p:ExcludeByAttribute=GeneratedCodeAttribute%2cObsoleteAttribute
+          -p:ExcludeByFile=**/*.g.cs
+
+      - name: Upload dotnet test results
+        uses: actions/upload-artifact@v6
+        with:
+          name: test-results
+          path: TestResults
+        # Use always() to also publish test results when there are test failures
+        if: ${{ always() }}
+
+      - name: Pack nugets
+        run: |
+          dotnet pack --no-build -o ${{ github.workspace }}/nuget
+
+      - name: Upload nuget artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: CpmUpdateTool_${{ steps.get-set-version.outputs.version }}_Nugets
+          path: ${{ github.workspace }}/nuget
