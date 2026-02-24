@@ -1,34 +1,15 @@
-# CpmUpdate
+# m-ringler.CpmUpdateTool
 
-`CpmUpdate` is a small command‑line utility that inspects a .NET folder's `Directory.Packages.props` file and updates NuGet package versions to the latest available release using `dotnet` CLI commands.
+[![NuGet](https://img.shields.io/nuget/v/m-ringler.CpmUpdateTool.svg)](https://www.nuget.org/packages/m-ringler.CpmUpdateTool)
 
-## Features
 
-* Lists outdated top‑level NuGet package references in projects under the current directory.
-* Optionally includes prerelease versions when checking for updates.
-* Prompts interactively for each upgrade, or can run non‑interactively with `--yes`.
-* Abstracts filesystem and console operations to ease testing.
-* Extensible through `ICmdRunner` for custom command execution.
-
-## Building
-
-```bash
-cd /path/to/CpmUpdate
-# restore and build everything
-dotnet build
-```
-
-### Formatting
-
-We use [CSharpier](https://github.com/belav/csharpier) to keep code style consistent:
-
-```bash
-csharpier format .
-```
+`CpmUpdateTool` is a small command‑line utility that inspects a .NET folder's `Directory.Packages.props` file and updates NuGet package versions to the latest available release.
 
 ## Installation
 
+```bash
 dotnet tool install m-ringler.CpmUpdateTool
+```
 
 ## Usage
 
@@ -40,9 +21,10 @@ dotnet update-cpm [options]
 
 ### Options
 
-* `-y`, `--yes` &mdash; update all packages without asking.
-* `--include-prerelease` &mdash; consider prerelease package versions when checking for updates.
-* `--help` &mdash; display help text.
+* `--yes` &mdash; update all packages without asking
+* `--include-prerelease` &mdash; consider prerelease package versions when checking for updates
+* `--help` &mdash; display help text
+* `--version` &mdash; print version
 
 ### Example
 
@@ -52,7 +34,7 @@ cd /my/solution
 dotnet update-cpm --include-prerelease
 
 # non-interactive run, accept everything
-dotnet update-cpm -y
+dotnet update-cpm --yes
 ```
 
 ## License
