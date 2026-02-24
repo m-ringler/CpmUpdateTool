@@ -1,0 +1,89 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "nuget: upgrade",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["update-cpm"],
+      "problemMatcher": []
+    },
+    {
+      "label": "nuget: upgrade (prerelease)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["update-cpm", "--include-prerelease"],
+      "problemMatcher": []
+    },
+    {
+      "label": "nuget: list outdated (prerelease)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "list",
+        "package",
+        "--outdated",
+        "--include-prerelease",
+        "--format",
+        "json"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "nuget: list outdated (no-prerelease)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["list", "package", "--outdated", "--format", "json"],
+      "problemMatcher": []
+    },
+    {
+      "label": "csharpier: format",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["tool", "run", "csharpier", "format", "${workspaceFolder}"],
+      "problemMatcher": []
+    },
+    {
+      "label": "dotnet: build",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["build"],
+      "problemMatcher": []
+    },
+    {
+      "label": "dotnet: publish",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["publish"],
+      "problemMatcher": []
+    },
+    {
+      "label": "dotnet: pack",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["pack"],
+      "problemMatcher": []
+    },
+    {
+      "label": "dotnet: test",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["test"],
+      "problemMatcher": []
+    },
+    {
+      "label": "dotnet: test --no-build",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["test", "--no-build"],
+      "problemMatcher": []
+    },
+    {
+      "label": "dotnet: build --no-restore",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["build", "--no-restore"],
+      "problemMatcher": []
+    }
+  ]
+}

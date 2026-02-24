@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "csharpier": {
+      "version": "1.2.6",
+      "commands": [
+        "csharpier"
+      ],
+      "rollForward": false
+    },
+    "m-ringler.cpmupdatetool": {
+      "version": "0.1.0",
+      "commands": [
+        "update-cpm"
+      ],
+      "rollForward": false
+    }
+  }
+}
