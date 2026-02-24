@@ -5,6 +5,9 @@ public class DefaultCmdRunnerTests
     private const string path = "./Directory.Packages.props";
     private const string cwd = "./";
 
+    private static CancellationToken Token =>
+        TestContext.Current.CancellationToken;
+
     [Fact]
     public async Task UpdatePackageAsync_ShouldModifyVersionInPropsFile()
     {
@@ -21,7 +24,7 @@ public class DefaultCmdRunnerTests
         var console = new FakeConsole();
         var runner = new DefaultCmdRunner(console, fs, cwd);
 
-        var exit = await runner.UpdatePackageAsync("Foo", "1.1.1");
+        var exit = await runner.UpdatePackageAsync("Foo", "1.1.1", Token);
         Assert.Equal(0, exit);
 
         var updated = fs[path];
@@ -42,7 +45,7 @@ public class DefaultCmdRunnerTests
         fs.AddFile(path, original);
 
         var runner = new DefaultCmdRunner(new FakeConsole(), fs, cwd);
-        var exit = await runner.UpdatePackageAsync("Bar", "9.9.9");
+        var exit = await runner.UpdatePackageAsync("Bar", "9.9.9", Token);
         Assert.NotEqual(0, exit);
 
         // file should remain untouched
@@ -55,7 +58,7 @@ public class DefaultCmdRunnerTests
     {
         var fs = new FakeFileSystem();
         var runner = new DefaultCmdRunner(new FakeConsole(), fs, cwd);
-        var exit = await runner.UpdatePackageAsync("Foo", "1.1.1");
+        var exit = await runner.UpdatePackageAsync("Foo", "1.1.1", Token);
         Assert.NotEqual(0, exit);
     }
 
@@ -67,8 +70,10 @@ public class DefaultCmdRunnerTests
         var runner = new DefaultCmdRunner(new FakeConsole(), fs, cwd);
         var exit = await runner.UpdatePackageAsync(
             "Microsoft.NET.Test.Sdk",
-            "18.3.0"
+            "18.3.0",
+            Token
         );
+
         Assert.Equal(0, exit);
         var updated = fs[path];
         Assert.Equal(TestXml.Replace("18.0.1", "18.3.0"), updated);

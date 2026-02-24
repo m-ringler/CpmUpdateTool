@@ -1,9 +1,7 @@
-﻿using System.CommandLine;
+﻿namespace CpmUpdateTool;
+
+using System.CommandLine;
 using System.Text.Json;
-
-namespace CpmUpdateTool;
-
-using System.Text;
 
 internal class Program(
     ICmdRunner runner,
@@ -11,9 +9,10 @@ internal class Program(
     IFileSystem fileSystem
 )
 {
-    private readonly ICmdRunner runner = runner;
-    private readonly IConsole console = console;
-    private readonly IFileSystem fileSystem = fileSystem;
+    private static readonly JsonSerializerOptions options = new()
+    {
+        PropertyNameCaseInsensitive = true,
+    };
 
     private readonly Option<bool> yesOption = new("--yes")
     {
@@ -69,7 +68,7 @@ internal class Program(
         root.TreatUnmatchedTokensAsErrors = true;
 
         // handler encapsulates the previous logic; options are supplied by the parser
-        root.SetAction(this.RunAsync);
+        root.SetAction(RunAsync);
 
         return root;
     }
@@ -85,9 +84,9 @@ internal class Program(
         );
 
         const string propsFile = "Directory.Packages.props";
-        if (!this.fileSystem.Exists(propsFile))
+        if (!fileSystem.Exists(propsFile))
         {
-            this.console.ErrorWriteLine(
+            console.ErrorWriteLine(
                 $"error: {propsFile} not found in current directory"
             );
             return 1;
@@ -96,44 +95,40 @@ internal class Program(
         string jsonText;
         try
         {
-            this.console.WriteLine("Checking for outdated packages...");
-            jsonText = await this.runner.ListOutdatedAsync(includePrerelease);
+            console.WriteLine("Checking for outdated packages...");
+            jsonText = await runner.ListOutdatedAsync(
+                includePrerelease,
+                CancellationToken.None
+            );
         }
         catch (Exception ex)
         {
-            this.console.ErrorWriteLine(
-                $"failed to list outdated packages: {ex}"
-            );
+            console.ErrorWriteLine($"failed to list outdated packages: {ex}");
             return 1;
         }
 
         OutdatedJson? data;
         try
         {
-            data = JsonSerializer.Deserialize<OutdatedJson>(
-                jsonText,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-            );
+            data = JsonSerializer.Deserialize<OutdatedJson>(jsonText, options);
         }
         catch (Exception ex)
         {
-            this.console.ErrorWriteLine(
-                $"error parsing JSON output: {ex.Message}"
-            );
+            console.ErrorWriteLine($"error parsing JSON output: {ex}");
             return 1;
         }
 
         var upgrades = data?.Flatten() ?? [];
-        if (upgrades == null || !upgrades.Any())
+        if (upgrades == null || upgrades.IsEmpty)
         {
-            this.console.WriteLine("All packages are up to date.");
+            console.WriteLine("All packages are up to date.");
             return 0;
         }
 
-        this.console.WriteLine("Packages with available updates:");
+        console.WriteLine("Packages with available updates:");
         foreach (var u in upgrades)
         {
-            this.console.WriteLine(
+            console.WriteLine(
                 $"- {u.Id}: {u.CurrentVersion} -> {u.LatestVersion}"
             );
         }
@@ -149,16 +144,15 @@ internal class Program(
             }
             if (doUpdate)
             {
-                this.console.WriteLine(
-                    $"updating {u.Id} to {u.LatestVersion}..."
-                );
-                var exit = await this.runner.UpdatePackageAsync(
+                console.WriteLine($"updating {u.Id} to {u.LatestVersion}...");
+                var exit = await runner.UpdatePackageAsync(
                     u.Id,
-                    u.LatestVersion
+                    u.LatestVersion,
+                    CancellationToken.None
                 );
                 if (exit != 0)
                 {
-                    this.console.ErrorWriteLine(
+                    console.ErrorWriteLine(
                         $"dotnet package update returned code {exit}"
                     );
                 }
@@ -170,49 +164,11 @@ internal class Program(
 
     private bool AskUser(string prompt)
     {
-        this.console.Write(prompt);
-        var resp = this.console.ReadLine();
+        console.Write(prompt);
+        var resp = console.ReadLine();
         if (string.IsNullOrEmpty(resp))
             return false;
         char c = resp.Trim().ToLowerInvariant()[0];
         return c == 'y';
-    }
-
-    private class ConsoleTextWriter : TextWriter
-    {
-        private readonly IConsole console;
-        private readonly bool isError;
-
-        public ConsoleTextWriter(IConsole console, bool isError)
-        {
-            this.console = console;
-            this.isError = isError;
-        }
-
-        public override Encoding Encoding => Encoding.UTF8;
-
-        public override void WriteLine(string? value)
-        {
-            if (this.isError)
-                this.console.ErrorWriteLine(value ?? string.Empty);
-            else
-                this.console.WriteLine(value ?? string.Empty);
-        }
-
-        public override void Write(char value)
-        {
-            if (this.isError)
-                this.console.ErrorWriteLine(value.ToString());
-            else
-                this.console.Write(value.ToString());
-        }
-
-        public override void Write(string? value)
-        {
-            if (this.isError)
-                this.console.ErrorWriteLine(value ?? string.Empty);
-            else
-                this.console.Write(value ?? string.Empty);
-        }
     }
 }

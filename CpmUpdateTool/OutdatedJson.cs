@@ -6,16 +6,13 @@ namespace CpmUpdateTool;
 public record OutdatedJson(
     int version,
     string parameters,
-    List<string> sources,
-    List<ProjectInfo> projects
+    string[] sources,
+    ProjectInfo[] projects
 );
 
-public record ProjectInfo(string path, List<FrameworkInfo> frameworks);
+public record ProjectInfo(string path, FrameworkInfo[] frameworks);
 
-public record FrameworkInfo(
-    string framework,
-    List<PackageInfo> topLevelPackages
-);
+public record FrameworkInfo(string framework, PackageInfo[] topLevelPackages);
 
 public record PackageInfo(
     string id,
@@ -58,44 +55,21 @@ public static partial class OutdatedJsonExtensions
         this OutdatedJson json
     )
     {
-        if (json?.projects == null)
-            return [];
+        var query =
+            from project in json?.projects ?? []
+            from fw in project.frameworks ?? []
+            from pkg in fw.topLevelPackages ?? []
+            where
+                pkg != null
+                && !string.IsNullOrEmpty(pkg.id)
+                && pkg.latestVersion != pkg.requestedVersion
+                && SemVer().IsMatch(pkg.latestVersion ?? string.Empty)
+            select new PackageUpgrade(
+                pkg.id,
+                pkg.requestedVersion,
+                pkg.latestVersion!
+            );
 
-        var results = ImmutableSortedSet.CreateBuilder<PackageUpgrade>();
-        foreach (var project in json.projects)
-        {
-            if (project.frameworks == null)
-                continue;
-            foreach (var fw in project.frameworks)
-            {
-                if (fw.topLevelPackages == null)
-                    continue;
-                foreach (var pkg in fw.topLevelPackages)
-                {
-                    if (pkg == null)
-                        continue;
-                    if (
-                        string.IsNullOrEmpty(pkg.id)
-                        || pkg.latestVersion == pkg.requestedVersion
-                    )
-                        continue; // no update or invalid
-
-                    // ensure latestVersion begins with major.minor.patch (semver-like)
-                    // examples: "1.2.3", "2.0.0-beta" are ok; "1.2", "beta" are skipped
-                    if (!SemVer().IsMatch(pkg.latestVersion ?? string.Empty))
-                        continue; // not a semantic version we can handle
-
-                    results.Add(
-                        new PackageUpgrade(
-                            pkg.id,
-                            pkg.requestedVersion,
-                            pkg.latestVersion!
-                        )
-                    );
-                }
-            }
-        }
-
-        return results.ToImmutableSortedSet();
+        return [.. query];
     }
 }

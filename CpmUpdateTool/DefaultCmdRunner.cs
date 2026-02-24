@@ -8,20 +8,23 @@ public class DefaultCmdRunner(
     string workingDirectory
 ) : ICmdRunner
 {
-    public async Task<string> ListOutdatedAsync(bool includePrerelease)
+    public async Task<string> ListOutdatedAsync(
+        bool includePrerelease,
+        CancellationToken token = default
+    )
     {
         var args =
             "list package --outdated --format json"
             + (includePrerelease ? " --include-prerelease" : "");
-        return await RunDotNetAsync(args);
+        return await RunDotNetAsync(args, token);
     }
 
-    public async Task<int> UpdatePackageAsync(string packageId, string version)
+    public async Task<int> UpdatePackageAsync(
+        string packageId,
+        string version,
+        CancellationToken token = default
+    )
     {
-        // update the central package version file in the current working directory
-        // this method is intentionally simple and synchronous; keeping async
-        // so callers can await it without changing their code.
-
         var propsPath = fileSystem.CombinePaths(
             workingDirectory,
             "Directory.Packages.props"
@@ -42,9 +45,10 @@ public class DefaultCmdRunner(
         System.Xml.Linq.XDocument? xdoc;
         using (var stream = fileSystem.OpenRead(propsPath))
         {
-            xdoc = System.Xml.Linq.XDocument.Load(
+            xdoc = await System.Xml.Linq.XDocument.LoadAsync(
                 stream,
-                System.Xml.Linq.LoadOptions.PreserveWhitespace
+                System.Xml.Linq.LoadOptions.PreserveWhitespace,
+                token
             );
         }
 
@@ -79,19 +83,23 @@ public class DefaultCmdRunner(
             {
                 NewLineHandling = System.Xml.NewLineHandling.Entitize,
                 OmitXmlDeclaration = xdoc.Declaration == null,
+                Async = true,
             };
 
             using var writer = System.Xml.XmlWriter.Create(
                 stream,
                 writerSettings
             );
-            xdoc.Save(writer);
+            await xdoc.SaveAsync(writer, token);
         }
 
         return 0;
     }
 
-    private async Task<string> RunDotNetAsync(string args)
+    private async Task<string> RunDotNetAsync(
+        string args,
+        CancellationToken token
+    )
     {
         console.WriteLine($"Running: dotnet {args}");
         var psi = new ProcessStartInfo("dotnet", args)
@@ -108,15 +116,15 @@ public class DefaultCmdRunner(
                 "failed to start dotnet process"
             );
 
-        var outputTask = p.StandardOutput.ReadToEndAsync();
-        var errorTask = p.StandardError.ReadToEndAsync();
+        var outputTask = p.StandardOutput.ReadToEndAsync(token);
+        var errorTask = p.StandardError.ReadToEndAsync(token);
 
         using (var cts = new CancellationTokenSource())
         {
             var busyTask = console.WriteBusyAsync(cts.Token);
             try
             {
-                await p.WaitForExitAsync();
+                await p.WaitForExitAsync(token);
             }
             finally
             {

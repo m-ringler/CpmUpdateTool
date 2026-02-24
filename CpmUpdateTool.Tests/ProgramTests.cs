@@ -2,10 +2,31 @@ namespace CpmUpdateTool.Tests;
 
 public class ProgramTests
 {
-    private const string SampleJson =
-        "{ "
-        + "\"version\":1,\"parameters\":\"--outdated\",\"sources\":[],\"projects\":[{"
-        + "\"path\":\"a.csproj\",\"frameworks\":[{\"framework\":\"net10.0\",\"topLevelPackages\":[{\"id\":\"Foo\",\"requestedVersion\":\"1.0\",\"resolvedVersion\":\"1.0\",\"latestVersion\":\"2.0.0\"}]}]}]}";
+    private const string SampleJson = """
+        {
+          "version": 1,
+          "parameters": "--outdated",
+          "sources": [],
+          "projects": [
+            {
+              "path": "a.csproj",
+              "frameworks": [
+                {
+                  "framework": "net10.0",
+                  "topLevelPackages": [
+                    {
+                      "id": "Foo",
+                      "requestedVersion": "1.0",
+                      "resolvedVersion": "1.0",
+                      "latestVersion": "2.0.0"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+        """;
 
     [Fact]
     public async Task Main_ShouldReturnError_WhenPropsMissing()
@@ -63,7 +84,7 @@ public class ProgramTests
 
         Assert.False(fake.ListCalled);
         Assert.False(fake.UpdateCalled);
-        var (exitCode, output, errorOutput) = HelpVerifier.GetHelp<Program>(
+        var (exitCode, output, errorOutput) = HelpVerifier.GetHelp(
             new Program(fake, console, fs).BuildRootCommand()
         );
         Assert.Equal(0, exitCode);

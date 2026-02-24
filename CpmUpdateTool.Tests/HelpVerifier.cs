@@ -2,11 +2,9 @@ using System.CommandLine;
 
 internal static class HelpVerifier
 {
-    public static (
-        int exitCode,
-        string output,
-        string errorOutput
-    ) GetHelp<TCommand>(Command command)
+    public static (int exitCode, string output, string errorOutput) GetHelp(
+        Command command
+    )
     {
         // ARRANGE
         var args = new[] { "--help" };
