@@ -12,7 +12,7 @@
     <Copyright>2026, M. Ringler</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
-    <PackageProjectUrl>https://github.com/m-ringler/CpmUpdateToolstraights</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/m-ringler/CpmUpdateTool</PackageProjectUrl>
     <RepositoryUrl>https://github.com/m-ringler/CpmUpdateTool.git</RepositoryUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
