@@ -35,9 +35,7 @@ internal class Program(
             fs,
             Directory.GetCurrentDirectory()
         );
-        var program = new Program(runner, console, fs);
-        var pr = program.BuildRootCommand().Parse(args);
-        return pr.InvokeAsync();
+        return RunAsync(args, runner, console, fs);
     }
 
     internal static Task<int> RunAsync(
