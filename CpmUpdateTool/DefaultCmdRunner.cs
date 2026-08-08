@@ -53,13 +53,6 @@ public class DefaultCmdRunner(
             return 1;
         }
 
-        // read with XmlReaderSettings so whitespace is retained, then operate
-        // on an XDocument which makes LINQ-based mutation easier than XmlDocument
-        var readerSettings = new System.Xml.XmlReaderSettings
-        {
-            IgnoreWhitespace = false,
-        };
-
         System.Xml.Linq.XDocument? xdoc;
         using (var stream = fileSystem.OpenRead(propsPath))
         {
