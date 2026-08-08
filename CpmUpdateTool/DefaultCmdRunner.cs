@@ -121,15 +121,11 @@ public class DefaultCmdRunner(
             CreateNoWindow = true,
             WorkingDirectory = workingDirectory,
         };
-        foreach (var arg in args)
-            psi.ArgumentList.Add(arg);
-
-        var p = Process.Start(psi);
-        if (p == null)
-            throw new InvalidOperationException(
+        var p =
+            Process.Start(psi)
+            ?? throw new InvalidOperationException(
                 "failed to start dotnet process"
             );
-
         var outputTask = p.StandardOutput.ReadToEndAsync(token);
         var errorTask = p.StandardError.ReadToEndAsync(token);
 
