@@ -119,7 +119,10 @@ public class DefaultCmdRunnerTests
 
         Assert.Equal(0, exit);
         var updated = fs[path];
-        Assert.Equal(TestXml.Replace("18.0.1", "18.3.0"), updated);
+        TestAssertions.EqualIgnoringLineEndings(
+            TestXml.Replace("18.0.1", "18.3.0"),
+            updated
+        );
     }
 
     private const string TestXml = """

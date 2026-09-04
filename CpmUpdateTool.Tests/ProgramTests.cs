@@ -103,8 +103,8 @@ public class ProgramTests
         );
         Assert.Equal(0, exitCode);
         Assert.Empty(errorOutput);
-        Assert.Equal(
-            """
+        TestAssertions.EqualIgnoringLineEndings(
+          """
 Description:
   Inspect and update NuGet packages referenced in Directory.Packages.props
 
@@ -163,4 +163,5 @@ Options:
     {
         return Program.RunAsync(args, runner, console, fs);
     }
+
 }
