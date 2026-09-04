@@ -16,8 +16,12 @@ dotnet tool install m-ringler.CpmUpdateTool
 Run the tool from a directory containing `Directory.Packages.props` (typically the repo root):
 
 ```bash
-dotnet update-cpm [options]
+dotnet update-cpm [solution-file] [options]
 ```
+
+### Arguments
+
+* `solution-file` &mdash; optionally use the specified solution file when checking for updates
 
 ### Options
 
@@ -32,6 +36,9 @@ dotnet update-cpm [options]
 # interactive check with prompts
 cd /my/solution
 dotnet update-cpm --include-prerelease
+
+# check packages for a specific solution
+dotnet update-cpm MySolution.slnx
 
 # non-interactive run, accept everything
 dotnet update-cpm --yes

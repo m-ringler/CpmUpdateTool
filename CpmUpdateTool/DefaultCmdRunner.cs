@@ -9,14 +9,32 @@ public class DefaultCmdRunner(
 ) : ICmdRunner
 {
     public async Task<string> ListOutdatedAsync(
+        string? solutionFile,
         bool includePrerelease,
         CancellationToken token = default
     )
     {
-        var args =
-            "list package --outdated --format json"
-            + (includePrerelease ? " --include-prerelease" : "");
+        var args = BuildListArguments(solutionFile, includePrerelease);
         return await RunDotNetAsync(args, token);
+    }
+
+    internal static IReadOnlyList<string> BuildListArguments(
+        string? solutionFile,
+        bool includePrerelease
+    )
+    {
+        var args = new List<string> { "list" };
+        if (!string.IsNullOrWhiteSpace(solutionFile))
+            args.Add(solutionFile);
+
+        args.Add("package");
+        args.Add("--outdated");
+        args.Add("--format");
+        args.Add("json");
+        if (includePrerelease)
+            args.Add("--include-prerelease");
+
+        return args;
     }
 
     public async Task<int> UpdatePackageAsync(
@@ -97,12 +115,12 @@ public class DefaultCmdRunner(
     }
 
     private async Task<string> RunDotNetAsync(
-        string args,
+        IReadOnlyList<string> args,
         CancellationToken token
     )
     {
-        console.WriteLine($"Running: dotnet {args}");
-        var psi = new ProcessStartInfo("dotnet", args)
+        console.WriteLine($"Running: dotnet {FormatArgumentsForDisplay(args)}");
+        var psi = new ProcessStartInfo("dotnet")
         {
             RedirectStandardOutput = true,
             RedirectStandardError = true,
@@ -110,6 +128,9 @@ public class DefaultCmdRunner(
             CreateNoWindow = true,
             WorkingDirectory = workingDirectory,
         };
+        foreach (var arg in args)
+            psi.ArgumentList.Add(arg);
+
         var p = Process.Start(psi);
         if (p == null)
             throw new InvalidOperationException(
@@ -145,5 +166,13 @@ public class DefaultCmdRunner(
             );
         }
         return output;
+    }
+
+    private static string FormatArgumentsForDisplay(IReadOnlyList<string> args)
+    {
+        return string.Join(
+            " ",
+            args.Select(arg => arg.Contains(' ') ? $"\"{arg}\"" : arg)
+        );
     }
 }

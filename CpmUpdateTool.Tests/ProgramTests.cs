@@ -75,6 +75,20 @@ public class ProgramTests
     }
 
     [Fact]
+    public async Task Main_ShouldPassSolutionFileToRunner()
+    {
+        var fake = new FakeRunner { JsonToReturn = SampleJson };
+        var console = new FakeConsole();
+        var fs = new FakeFileSystem();
+        fs.AddFile("Directory.Packages.props");
+
+        var exit = await RunWithRunner(fake, console, fs, ["My.slnx", "--yes"]);
+
+        Assert.Equal(0, exit);
+        Assert.Equal("My.slnx", fake.LastSolutionFile);
+    }
+
+    [Fact]
     public async Task Main_ShouldShowHelp_WhenHelpOption()
     {
         var fake = new FakeRunner();
@@ -95,7 +109,10 @@ Description:
   Inspect and update NuGet packages referenced in Directory.Packages.props
 
 Usage:
-  CpmUpdateTool.Tests [options]
+  CpmUpdateTool.Tests [<solution-file>] [options]
+
+Arguments:
+  <solution-file>  Solution file to use when checking for updates
 
 Options:
   --include-prerelease  Include prerelease versions when checking for updates

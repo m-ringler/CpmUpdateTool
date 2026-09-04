@@ -8,13 +8,16 @@ internal class FakeRunner : ICmdRunner
     public string LastUpdateVersion { get; private set; } = string.Empty;
     public bool ThrowOnList { get; set; }
     public string JsonToReturn { get; set; } = string.Empty;
+    public string? LastSolutionFile { get; private set; }
 
     public Task<string> ListOutdatedAsync(
+        string? solutionFile,
         bool includePrerelease,
         CancellationToken token = default
     )
     {
         ListCalled = true;
+        LastSolutionFile = solutionFile;
         if (ThrowOnList)
             throw new InvalidOperationException("fail");
         return Task.FromResult(JsonToReturn);
