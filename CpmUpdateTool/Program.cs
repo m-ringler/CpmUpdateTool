@@ -26,6 +26,14 @@ internal class Program(
         Description = "Include prerelease versions when checking for updates",
     };
 
+    private readonly Argument<string?> solutionFileArgument = new(
+        "solution-file"
+    )
+    {
+        Description = "Solution file to use when checking for updates",
+        Arity = ArgumentArity.ZeroOrOne,
+    };
+
     private static Task<int> Main(string[] args)
     {
         var console = new RealConsole();
@@ -59,6 +67,7 @@ internal class Program(
             "Inspect and update NuGet packages referenced in Directory.Packages.props"
         )
         {
+            this.solutionFileArgument,
             this.includePrereleaseOption,
             this.yesOption,
         };
@@ -76,6 +85,13 @@ internal class Program(
         CancellationToken ct
     )
     {
+        var solutionFile = parseResult.GetValue(this.solutionFileArgument);
+        if (solutionFile?.StartsWith("-", StringComparison.Ordinal) == true)
+        {
+            console.ErrorWriteLine($"unknown option: {solutionFile}");
+            return 1;
+        }
+
         var yes = parseResult.GetValue(this.yesOption);
         var includePrerelease = parseResult.GetValue(
             this.includePrereleaseOption
@@ -95,6 +111,7 @@ internal class Program(
         {
             console.WriteLine("Checking for outdated packages...");
             jsonText = await runner.ListOutdatedAsync(
+                solutionFile,
                 includePrerelease,
                 CancellationToken.None
             );

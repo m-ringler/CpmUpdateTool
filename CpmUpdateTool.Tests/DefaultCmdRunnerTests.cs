@@ -9,6 +9,49 @@ public class DefaultCmdRunnerTests
         TestContext.Current.CancellationToken;
 
     [Fact]
+    public void BuildListArguments_ShouldPutSolutionFileBeforePackage()
+    {
+        var args = DefaultCmdRunner.BuildListArguments("My.slnx", false);
+
+        Assert.Equal(
+            ["list", "My.slnx", "package", "--outdated", "--format", "json"],
+            args
+        );
+    }
+
+    [Fact]
+    public void BuildListArguments_ShouldOmitSolutionFileWhenNotSpecified()
+    {
+        var args = DefaultCmdRunner.BuildListArguments(null, false);
+
+        Assert.Equal(
+            ["list", "package", "--outdated", "--format", "json"],
+            args
+        );
+    }
+
+    [Fact]
+    public void BuildListArguments_ShouldKeepSpacesInSolutionFileArgument()
+    {
+        var args = DefaultCmdRunner.BuildListArguments(
+            "My Solution.slnx",
+            false
+        );
+
+        Assert.Equal(
+            [
+                "list",
+                "My Solution.slnx",
+                "package",
+                "--outdated",
+                "--format",
+                "json",
+            ],
+            args
+        );
+    }
+
+    [Fact]
     public async Task UpdatePackageAsync_ShouldModifyVersionInPropsFile()
     {
         const string original =
@@ -76,7 +119,10 @@ public class DefaultCmdRunnerTests
 
         Assert.Equal(0, exit);
         var updated = fs[path];
-        Assert.Equal(TestXml.Replace("18.0.1", "18.3.0"), updated);
+        TestAssertions.EqualIgnoringLineEndings(
+            TestXml.Replace("18.0.1", "18.3.0"),
+            updated
+        );
     }
 
     private const string TestXml = """
