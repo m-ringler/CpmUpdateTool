@@ -50,7 +50,8 @@ jobs:
           dotnet test
           -c Release
           --verbosity normal
-          --logger trx
+          --report-xunit-trx
+          --report-xunit-trx-filename test-results.trx
           --results-directory "TestResults"
           -p:CollectCoverage=true
           -p:CoverletOutputFormat=cobertura
