@@ -113,7 +113,7 @@ public class DefaultCmdRunner(
     )
     {
         console.WriteLine($"Running: dotnet {FormatArgumentsForDisplay(args)}");
-        var psi = new ProcessStartInfo("dotnet")
+        var psi = new ProcessStartInfo("dotnet", args)
         {
             RedirectStandardOutput = true,
             RedirectStandardError = true,
