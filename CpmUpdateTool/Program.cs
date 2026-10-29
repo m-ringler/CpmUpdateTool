@@ -150,13 +150,12 @@ internal class Program(
 
         foreach (var u in upgrades)
         {
-            bool doUpdate = yes;
-            if (!yes)
-            {
-                doUpdate = AskUser(
+            bool doUpdate =
+                yes
+                || AskUser(
                     $"Update {u.Id} from {u.CurrentVersion} to {u.LatestVersion}? (y/n): "
                 );
-            }
+
             if (doUpdate)
             {
                 console.WriteLine($"updating {u.Id} to {u.LatestVersion}...");

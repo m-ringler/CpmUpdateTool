@@ -2,10 +2,7 @@
 
 internal static class TestAssertions
 {
-    public static void EqualIgnoringLineEndings(
-        string expected,
-        string actual
-    )
+    public static void EqualIgnoringLineEndings(string expected, string actual)
     {
         Assert.Equal(
             expected.ReplaceLineEndings("\n"),

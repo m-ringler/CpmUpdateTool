@@ -53,13 +53,6 @@ public class DefaultCmdRunner(
             return 1;
         }
 
-        // read with XmlReaderSettings so whitespace is retained, then operate
-        // on an XDocument which makes LINQ-based mutation easier than XmlDocument
-        var readerSettings = new System.Xml.XmlReaderSettings
-        {
-            IgnoreWhitespace = false,
-        };
-
         System.Xml.Linq.XDocument? xdoc;
         using (var stream = fileSystem.OpenRead(propsPath))
         {
@@ -120,7 +113,7 @@ public class DefaultCmdRunner(
     )
     {
         console.WriteLine($"Running: dotnet {FormatArgumentsForDisplay(args)}");
-        var psi = new ProcessStartInfo("dotnet")
+        var psi = new ProcessStartInfo("dotnet", args)
         {
             RedirectStandardOutput = true,
             RedirectStandardError = true,
@@ -128,15 +121,11 @@ public class DefaultCmdRunner(
             CreateNoWindow = true,
             WorkingDirectory = workingDirectory,
         };
-        foreach (var arg in args)
-            psi.ArgumentList.Add(arg);
-
-        var p = Process.Start(psi);
-        if (p == null)
-            throw new InvalidOperationException(
+        var p =
+            Process.Start(psi)
+            ?? throw new InvalidOperationException(
                 "failed to start dotnet process"
             );
-
         var outputTask = p.StandardOutput.ReadToEndAsync(token);
         var errorTask = p.StandardError.ReadToEndAsync(token);
 
