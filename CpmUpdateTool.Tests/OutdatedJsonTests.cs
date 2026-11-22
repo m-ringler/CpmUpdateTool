@@ -104,13 +104,11 @@ public class OutdatedJsonTests
         var upgrades = json.Flatten().ToList();
         // only Good and Good2 should appear
         Assert.Equal(2, upgrades.Count);
-        Assert.Contains(
-            upgrades,
-            u => u.Id == "Good" && u.LatestVersion == "2.1.3"
+        Assert.Contains(upgrades, u =>
+            u.Id == "Good" && u.LatestVersion == "2.1.3"
         );
-        Assert.Contains(
-            upgrades,
-            u => u.Id == "Good2" && u.LatestVersion == "3.0.0-beta"
+        Assert.Contains(upgrades, u =>
+            u.Id == "Good2" && u.LatestVersion == "3.0.0-beta"
         );
     }
 }
