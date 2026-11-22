@@ -121,8 +121,7 @@ public class DefaultCmdRunner(
             CreateNoWindow = true,
             WorkingDirectory = workingDirectory,
         };
-        var p =
-            Process.Start(psi)
+        var p = Process.Start(psi)
             ?? throw new InvalidOperationException(
                 "failed to start dotnet process"
             );
